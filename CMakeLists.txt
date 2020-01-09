@@ -3,13 +3,13 @@ project(blinky C ASM)
 
 set(CMAKE_VERBOSE_MAKEFILE 1)
 
-# set(NRF52_SDK "...")
+set(NRF52_SDK "/home/wieker/Projects/linux/nrf/sdk")
 # or
 # -DNRF52_SDK=...
 
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_COMPILER "/usr/local/bin/arm-none-eabi-gcc")
-set(CMAKE_ASM_COMPILER "/usr/local/bin/arm-none-eabi-gcc")
+set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
+set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 
 set(ARCH_FLAGS "\
         -mabi=aapcs \
