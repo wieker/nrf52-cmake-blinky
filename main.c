@@ -1,4 +1,3 @@
-#include <nrf52.h>
 #include <nrf_delay.h>
 
 int main() {

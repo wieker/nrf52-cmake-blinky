@@ -14,14 +14,11 @@ set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 set(ARCH_FLAGS "\
         -mabi=aapcs \
         -mcpu=cortex-m4 \
-        -mfloat-abi=hard \
-        -mfpu=fpv4-sp-d16 \
         -mthumb \
 ")
 
 set(GLOBAL_FLAGS "${ARCH_FLAGS} \
-        -DNRF52 \
-        -DNRF52832_XXAA \
+        -DNRF52810_XXAA \
 ")
 
 set(CMAKE_ASM_FLAGS "${GLOBAL_FLAGS} \
@@ -38,6 +35,7 @@ set(CMAKE_C_FLAGS "${GLOBAL_FLAGS} \
         -fno-strict-aliasing \
         -fshort-enums \
         -std=c99 \
+        -g \
 ")
 
 include_directories(
@@ -66,8 +64,8 @@ set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_COMPILER} <LINK_FLAGS> <OBJECTS> -o <TARG
 
 add_executable(${CMAKE_PROJECT_NAME}
         main.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
 )
 
 add_custom_command(
