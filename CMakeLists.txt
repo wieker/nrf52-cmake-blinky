@@ -24,6 +24,14 @@ set(GLOBAL_FLAGS "${ARCH_FLAGS} \
         -DNRF52 \
         -DNRF52832_XXAA \
         -DBOARD_PCA10040 \
+        -DS132 \
+        -DSOFTDEVICE_PRESENT \
+        -DAPP_TIMER_V2 \
+        -DAPP_TIMER_V2_RTC1_ENABLED \
+        -DCONFIG_GPIO_AS_PINRESET \
+        -DFLOAT_ABI_HARD \
+        -DNRF52_PAN_74 \
+        -DNRF_SD_BLE_API_VERSION=7 \
 ")
 
 set(CMAKE_ASM_FLAGS "${GLOBAL_FLAGS} \
