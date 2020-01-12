@@ -292,6 +292,12 @@ static void idle_state_handle(void)
  */
 int main(void)
 {
+    // Initialize.
+    log_init();
+    timers_init();
+    leds_init();
+    power_management_init();
+
     NRF_LOG_INFO("Beacon example started for nRF52810.");
     NRF_LOG_INFO("Beacon example started for nRF52810.");
     NRF_P0->DIRSET = 1 << 17 | 1 << 18 | 1 << 19 | 1 << 20;
@@ -305,11 +311,7 @@ int main(void)
         NRF_P0->OUTCLR = 1 << 17 | 1 << 20;
         nrf_delay_ms(300);
     }
-    // Initialize.
-    log_init();
-    timers_init();
-    leds_init();
-    power_management_init();
+
     ble_stack_init();
     advertising_init();
 
