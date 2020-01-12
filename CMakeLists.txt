@@ -19,7 +19,8 @@ set(ARCH_FLAGS "\
 ")
 
 set(GLOBAL_FLAGS "${ARCH_FLAGS} \
-        -DBOARD_CUSTOM \
+        -DBOARD_PCA10040 \
+        -DDEVELOP_IN_NRF52832 \
         -DNRF52810_XXAA \
         -DS132 \
         -DSOFTDEVICE_PRESENT \
@@ -190,6 +191,8 @@ include_directories(
         ${NRF52_SDK}/components/ble/ble_services/ble_hrs
 
         ${NRF52_SDK}/components/libraries/ringbuf
+        ${NRF52_SDK}/components/libraries/ringbuf
+        ${NRF52_SDK}/components/proprietary_rf/esb
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${ARCH_FLAGS} \
@@ -276,7 +279,54 @@ add_executable(ble
 
         ${NRF52_SDK}/components/ble/ble_services/ble_lbs/ble_lbs.c
         ${NRF52_SDK}/components/libraries/ringbuf/nrf_ringbuf.c
-        )
+)
+
+
+
+add_executable(direct
+        direct.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
+
+
+        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_rtt.c
+        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_serial.c
+        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_uart.c
+        ${NRF52_SDK}/components/libraries/log/src/nrf_log_default_backends.c
+        ${NRF52_SDK}/components/libraries/log/src/nrf_log_frontend.c
+        ${NRF52_SDK}/components/libraries/log/src/nrf_log_str_formatter.c
+
+        ${NRF52_SDK}/components/libraries/util/app_error.c
+        ${NRF52_SDK}/components/libraries/util/app_error_handler_gcc.c
+        ${NRF52_SDK}/components/libraries/util/app_error_weak.c
+
+        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
+
+        ${NRF52_SDK}/components/libraries/util/nrf_assert.c
+        ${NRF52_SDK}/components/libraries/atomic/nrf_atomic.c
+        ${NRF52_SDK}/components/libraries/balloc/nrf_balloc.c
+
+        ${NRF52_SDK}/external/fprintf/nrf_fprintf.c
+        ${NRF52_SDK}/external/fprintf/nrf_fprintf_format.c
+
+        ${NRF52_SDK}/components/libraries/memobj/nrf_memobj.c
+        ${NRF52_SDK}/components/libraries/strerror/nrf_strerror.c
+        ${NRF52_SDK}/components/boards/boards.c
+
+        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_gpiote.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uarte.c
+
+        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT.c
+        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT_Syscalls_GCC.c
+        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT_printf.c
+
+        ${NRF52_SDK}/components/libraries/ringbuf/nrf_ringbuf.c
+        ${NRF52_SDK}/components/proprietary_rf/esb/nrf_esb.c
+
+)
 
 add_custom_command(
         OUTPUT ${CMAKE_PROJECT_NAME}.hex
