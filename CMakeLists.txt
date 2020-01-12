@@ -36,7 +36,6 @@ set(CMAKE_ASM_FLAGS "${GLOBAL_FLAGS} \
 ")
 
 set(CMAKE_C_FLAGS "${GLOBAL_FLAGS} \
-        -O3 \
         -Wall \
         -Werror \
         -fdata-sections \
