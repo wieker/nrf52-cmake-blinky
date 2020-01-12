@@ -292,19 +292,32 @@ static void idle_state_handle(void)
  */
 int main(void)
 {
-    int i = 0;
     // Initialize.
     log_init();
     timers_init();
     leds_init();
     power_management_init();
-    ble_stack_init();
+
+
+    /* Configure board. */
+    bsp_board_init(BSP_INIT_LEDS);
+
+    /* Toggle LEDs. */
+    while (true)
+    {
+        for (int i = 0; i < LEDS_NUMBER; i++)
+        {
+            bsp_board_led_invert(i);
+            nrf_delay_ms(500);
+        }
+    }
+
 
     NRF_LOG_INFO("Beacon example started for nRF52810.");
     NRF_LOG_INFO("Beacon example started for nRF52810.");
     NRF_P0->DIRSET = 1 << 17 | 1 << 18 | 1 << 19 | 1 << 20;
 
-    for (; i < 10; i ++) {
+    for (int i = 0; i < 10; i ++) {
         NRF_P0->OUTSET = 1 << 17 | 1 << 20;
         NRF_P0->OUTCLR = 1 << 18 | 1 << 19;
         nrf_delay_ms(300);
@@ -314,6 +327,7 @@ int main(void)
         nrf_delay_ms(300);
     }
 
+    ble_stack_init();
     advertising_init();
 
     // Start execution.
