@@ -14,16 +14,13 @@ set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 set(ARCH_FLAGS "\
         -mabi=aapcs \
         -mcpu=cortex-m4 \
-        -mfloat-abi=hard \
-        -mfpu=fpv4-sp-d16 \
         -mthumb \
         -g3 \
 ")
 
 set(GLOBAL_FLAGS "${ARCH_FLAGS} \
-        -DNRF52 \
-        -DNRF52832_XXAA \
-        -DBOARD_PCA10040 \
+        -DBOARD_CUSTOM \
+        -DNRF52810_XXAA \
         -DS132 \
         -DSOFTDEVICE_PRESENT \
         -DAPP_TIMER_V2 \
@@ -216,8 +213,8 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 add_executable(ble
         ble.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
 
 
         ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_rtt.c
@@ -247,7 +244,6 @@ add_executable(ble
         ${NRF52_SDK}/components/libraries/experimental_section_vars/nrf_section_iter.c
         ${NRF52_SDK}/components/libraries/strerror/nrf_strerror.c
         ${NRF52_SDK}/components/libraries/sensorsim/sensorsim.c
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52.c
         ${NRF52_SDK}/components/boards/boards.c
         ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_clock.c
         ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
