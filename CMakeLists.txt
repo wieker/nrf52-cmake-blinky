@@ -328,6 +328,17 @@ add_executable(direct
 
 )
 
+add_executable(uart
+        uart.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
+
+        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
+        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
+)
+
 add_custom_command(
         OUTPUT ${CMAKE_PROJECT_NAME}.hex
         COMMAND arm-none-eabi-objcopy -O ihex ${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}.hex
