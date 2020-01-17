@@ -53,7 +53,7 @@ include_directories(
 
         ${NRF52_SDK}/components/libraries/delay
         ${NRF52_SDK}/modules/nrfx
-        ${NRF52_SDK}/modules/nrfx/templates/nRF52832  # nrfx_config.h
+        ${NRF52_SDK}/modules/nrfx/templates/nRF52810  # nrfx_config.h
         ${NRF52_SDK}/integration/nrfx
         ${NRF52_SDK}/components/libraries/util
 
@@ -337,7 +337,22 @@ add_executable(uart
         ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
         ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
         ${NRF52_SDK}/components/libraries/util/app_util_platform.c
-)
+        )
+
+add_executable(twi
+        i2c.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
+
+        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
+        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_twi.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
+        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
+
+        ${NRF52_SDK}//components/drivers_ext/hts221/hts221.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_twi.c
+        )
 
 add_custom_command(
         OUTPUT ${CMAKE_PROJECT_NAME}.hex

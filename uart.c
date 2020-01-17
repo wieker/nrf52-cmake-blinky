@@ -12,7 +12,7 @@ nrf_drv_uart_t m_uart = NRF_DRV_UART_INSTANCE(0);
 void uart_init()
 {
     nrf_drv_uart_config_t config = NRF_DRV_UART_DEFAULT_CONFIG;
-    config.pseltxd  = NRF_LOG_BACKEND_UART_TX_PIN;
+    config.pseltxd  = 11;
     config.pselrxd  = NRF_UART_PSEL_DISCONNECTED;
     config.pselcts  = NRF_UART_PSEL_DISCONNECTED;
     config.pselrts  = NRF_UART_PSEL_DISCONNECTED;
