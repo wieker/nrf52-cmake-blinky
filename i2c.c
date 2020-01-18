@@ -71,6 +71,15 @@ int main() {
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "ok \r\n", 5);
         data_handler(a ++);
         scan_i2c();
+
+
+        uint8_t addr16 = 0x0F;
+        uint8_t value = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        static char buf[100];
+        sprintf(buf, "Response: 0x%x.\r\n", value);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
     }
 }
 
