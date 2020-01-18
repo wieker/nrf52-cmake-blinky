@@ -56,7 +56,18 @@ int main() {
     NRF_P0->DIRSET = 1 << 17 | 1 << 18 | 1 << 19 | 1 << 20;
     uart_init();
     twi_init();
-    int a = 0;
+
+
+    uint8_t cmd_ctrl[] = { 0x20, 0x81};
+    nrf_drv_twi_tx(&m_twi, 0x5F, cmd_ctrl, 2, false);
+
+    uint8_t a = 0x20;
+    uint8_t v = 0x00;
+    nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &a, 1, true);
+    nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &v, 1);
+    static char buf[100];
+    sprintf(buf, "Response Control: 0x%x.\r\n", v);
+    nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
 
 
     while (1) {
@@ -79,6 +90,19 @@ int main() {
         nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
         static char buf[100];
         sprintf(buf, "Response: 0x%x.\r\n", value);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+
+
+        addr16 = 0x28;
+        value = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        addr16 = 0x29;
+        uint8_t valueHigh = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
+
+        sprintf(buf, "Temperature: 0x%x.\r\n", (valueHigh << 8) + value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
     }
 }
