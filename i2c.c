@@ -91,18 +91,67 @@ int main() {
         static char buf[100];
         sprintf(buf, "Response: 0x%x.\r\n", value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        int t0, t1, cvt0, cvt1;
 
 
-        addr16 = 0x28;
+        addr16 = 0x32;
         value = 0x00;
         nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
         nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
-        addr16 = 0x29;
+        sprintf(buf, "T0_degC_x8: %d.\r\n", value >> 3);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        t0 = value >> 3;
+
+
+        addr16 = 0x33;
+        value = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        sprintf(buf, "T1_degC_x8: %d.\r\n", value >> 3);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        t1 = value >> 3;
+
+
+
+        addr16 = 0x3C;
+        value = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        addr16 = 0x3D;
         uint8_t valueHigh = 0x00;
         nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
         nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
 
-        sprintf(buf, "Temperature: 0x%x.\r\n", (valueHigh << 8) + value);
+        sprintf(buf, "T0_OUT: %d.\r\n", (valueHigh << 8) + value);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        cvt0 = (valueHigh << 8) + value;
+
+        addr16 = 0x3E;
+        value = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        addr16 = 0x3F;
+        valueHigh = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
+
+        sprintf(buf, "T1_OUT: %d.\r\n", (valueHigh << 8) + value);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        cvt1 = (valueHigh << 8) + value;
+
+        addr16 = 0x2A;
+        value = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        addr16 = 0x2B;
+        valueHigh = 0x00;
+        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
+        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
+
+        sprintf(buf, "Temperature: %d.\r\n", (valueHigh << 8) + value);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        int raw = (valueHigh << 8) + value;
+        sprintf(buf, "Temperature: %d.\r\n", ((t1 - t0) / (cvt1 - cvt0)) * (raw - cvt0) + t0);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
     }
 }
