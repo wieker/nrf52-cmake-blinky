@@ -14,6 +14,8 @@ nrf_drv_uart_t m_uart = NRF_DRV_UART_INSTANCE(0);
 
 void scan_i2c();
 
+uint8_t readRegister(uint8_t *reg_addr);
+
 /* TWI instance. */
 static const nrf_drv_twi_t m_twi = NRF_DRV_TWI_INSTANCE(0);
 
@@ -56,17 +58,16 @@ int main() {
     NRF_P0->DIRSET = 1 << 17 | 1 << 18 | 1 << 19 | 1 << 20;
     uart_init();
     twi_init();
+    int a = 0;
 
 
     uint8_t cmd_ctrl[] = { 0x20, 0x81};
     nrf_drv_twi_tx(&m_twi, 0x5F, cmd_ctrl, 2, false);
 
-    uint8_t a = 0x20;
-    uint8_t v = 0x00;
-    nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &a, 1, true);
-    nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &v, 1);
+    uint8_t addr16 = 0x20;
+    uint8_t value = readRegister(&addr16);
     static char buf[100];
-    sprintf(buf, "Response Control: 0x%x.\r\n", v);
+    sprintf(buf, "Response Control: 0x%x.\r\n", value);
     nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
 
 
@@ -84,10 +85,8 @@ int main() {
         scan_i2c();
 
 
-        uint8_t addr16 = 0x0F;
-        uint8_t value = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        addr16 = 0x0F;
+        value = readRegister(&addr16);
         static char buf[100];
         sprintf(buf, "Response: 0x%x.\r\n", value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
@@ -95,65 +94,56 @@ int main() {
 
 
         addr16 = 0x32;
-        value = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        value = readRegister(&addr16);
         sprintf(buf, "T0_degC_x8: %d.\r\n", value >> 3);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
         t0 = value >> 3;
 
 
         addr16 = 0x33;
-        value = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        value = readRegister(&addr16);
         sprintf(buf, "T1_degC_x8: %d.\r\n", value >> 3);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
         t1 = value >> 3;
 
 
-
         addr16 = 0x3C;
-        value = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        value = readRegister(&addr16);
         addr16 = 0x3D;
-        uint8_t valueHigh = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
+        uint8_t valueHigh = readRegister(&addr16);
 
         sprintf(buf, "T0_OUT: %d.\r\n", (valueHigh << 8) + value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
         cvt0 = (valueHigh << 8) + value;
 
         addr16 = 0x3E;
-        value = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        value = readRegister(&addr16);
         addr16 = 0x3F;
-        valueHigh = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
+        valueHigh = readRegister(&addr16);
 
         sprintf(buf, "T1_OUT: %d.\r\n", (valueHigh << 8) + value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
         cvt1 = (valueHigh << 8) + value;
 
         addr16 = 0x2A;
-        value = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &value, 1);
+        value = readRegister(&addr16);
         addr16 = 0x2B;
-        valueHigh = 0x00;
-        nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) &addr16, 1, true);
-        nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) &valueHigh, 1);
+        valueHigh = readRegister(&addr16);
 
         sprintf(buf, "Temperature: %d.\r\n", (valueHigh << 8) + value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
         int raw = (valueHigh << 8) + value;
-        sprintf(buf, "Temperature: %d.\r\n", ((t1 - t0) / (cvt1 - cvt0)) * (raw - cvt0) + t0);
+        sprintf(buf, "Temperature: %d.\r\n", ((t1 - t0) * (raw - cvt0)) / (cvt1 - cvt0) + t0);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
     }
+}
+
+uint8_t readRegister(uint8_t *reg_addr) {
+    uint8_t value;
+    value = 0x00;
+    nrf_drv_twi_tx(&m_twi, 0x5F, (uint8_t *) reg_addr, 1, true);
+    nrf_drv_twi_rx(&m_twi, 0x5F, (uint8_t *) & value, 1);
+    return value;
 }
 
 void scan_i2c() {
