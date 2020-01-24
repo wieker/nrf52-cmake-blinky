@@ -105,12 +105,17 @@ int main() {
         sprintf(buf, "T1_degC_x8: %d.\r\n", value >> 3);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
         t1 = value >> 3;
+        addr16 = 0x35;
+        value = readRegister(&addr16);
+        sprintf(buf, "T1_degC_x8: %d.\r\n", value >> 3);
+        nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
+        t1 += (((value >> 2) & 0x3) << 5);
 
 
         addr16 = 0x3C;
         value = readRegister(&addr16);
         addr16 = 0x3D;
-        uint8_t valueHigh = readRegister(&addr16);
+        int8_t valueHigh = readRegister(&addr16);
 
         sprintf(buf, "T0_OUT: %d.\r\n", (valueHigh << 8) + value);
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) buf, strlen(buf));
