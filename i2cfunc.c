@@ -1,3 +1,8 @@
+
+#include <legacy/nrf_drv_uart.h>
+#include <sdk_config.h>
+#include <nrf_delay.h>
+#include <legacy/nrf_drv_twi.h>
 #include "i2cfunc.h"
 #include <legacy/nrf_drv_twi.h>
 #include <boards.h>

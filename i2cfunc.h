@@ -11,6 +11,7 @@
 extern nrf_drv_uart_t m_uart;
 
 void twi_init (void);
+void uart_init();
 
 void scan_i2c();
 
