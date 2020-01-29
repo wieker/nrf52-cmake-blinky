@@ -111,7 +111,7 @@ int main() {
 
     clocks_start();
 
-    esb_init_tx();
+    /*esb_init_tx();
     nrf_esb_payload_t tx_payload;
 
     while (true)
@@ -126,7 +126,9 @@ int main() {
         }
 
         nrf_delay_us(50000);
-    }
+    }*/
+
+    esb_init_rx();
 
     nrf_esb_start_rx();
 
