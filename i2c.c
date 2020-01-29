@@ -22,7 +22,7 @@ static const nrf_drv_twi_t m_twi = NRF_DRV_TWI_INSTANCE(0);
 void uart_init()
 {
     nrf_drv_uart_config_t config = NRF_DRV_UART_DEFAULT_CONFIG;
-    config.pseltxd  = 11;
+    config.pseltxd  = 6;
     config.pselrxd  = NRF_UART_PSEL_DISCONNECTED;
     config.pselcts  = NRF_UART_PSEL_DISCONNECTED;
     config.pselrts  = NRF_UART_PSEL_DISCONNECTED;
