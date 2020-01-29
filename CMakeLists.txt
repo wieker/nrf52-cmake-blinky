@@ -341,6 +341,7 @@ add_executable(uart
 
 add_executable(rf_uart
         rf_uart.c
+        i2cfunc.c
         ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
         ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
 

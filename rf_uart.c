@@ -8,8 +8,7 @@
 #include <nrf_delay.h>
 #include <proprietary_rf/esb/nrf_esb.h>
 #include <sdk_macros.h>
-
-nrf_drv_uart_t m_uart = NRF_DRV_UART_INSTANCE(0);
+#include "i2cfunc.h"
 
 void uart_init()
 {
