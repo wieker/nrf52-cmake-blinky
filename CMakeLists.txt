@@ -339,6 +339,19 @@ add_executable(uart
         ${NRF52_SDK}/components/libraries/util/app_util_platform.c
         )
 
+add_executable(rf_uart
+        rf_uart.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
+
+        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
+        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
+
+        ${NRF52_SDK}/components/proprietary_rf/esb/nrf_esb.c
+)
+
 add_executable(twi
         i2c.c
         ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
