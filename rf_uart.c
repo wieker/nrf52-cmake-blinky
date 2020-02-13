@@ -38,6 +38,14 @@ void nrf_esb_event_handler(nrf_esb_evt_t const * p_event)
             if (nrf_esb_read_rx_payload(&rx_payload) == NRF_SUCCESS)
             {
                 nrfx_uart_tx(&m_uart.uart, (uint8_t  *) rx_payload.data, rx_payload.length);
+
+                NRF_P0->OUTSET = 1 << 20 | 1 << 22;
+                NRF_P0->OUTCLR = 1 << 18 | 1 << 19;
+                nrf_delay_ms(100);
+
+                NRF_P0->OUTSET = 1 << 18 | 1 << 19;
+                NRF_P0->OUTCLR = 1 << 20 | 1 << 22;
+                nrf_delay_ms(100);
             }
             break;
     }
@@ -111,7 +119,7 @@ int main() {
 
     clocks_start();
 
-    esb_init_tx();
+    /*esb_init_tx();
     nrf_esb_payload_t tx_payload;
 
     while (true)
@@ -132,19 +140,19 @@ int main() {
         NRF_P0->OUTSET = 1 << 18 | 1 << 19;
         NRF_P0->OUTCLR = 1 << 20 | 1 << 22;
         nrf_delay_ms(300);
-    }
+    }*/
 
     esb_init_rx();
 
     nrf_esb_start_rx();
 
     while (1) {
-        NRF_P0->OUTSET = 1 << 17 | 1 << 20;
-        NRF_P0->OUTCLR = 1 << 18 | 1 << 19;
+        //NRF_P0->OUTSET = 1 << 17 | 1 << 20;
+        //NRF_P0->OUTCLR = 1 << 18 | 1 << 19;
         nrf_delay_ms(300);
 
-        NRF_P0->OUTSET = 1 << 18 | 1 << 19;
-        NRF_P0->OUTCLR = 1 << 17 | 1 << 20;
+        //NRF_P0->OUTSET = 1 << 18 | 1 << 19;
+        //NRF_P0->OUTCLR = 1 << 17 | 1 << 20;
         nrf_delay_ms(300);
 
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "ok \r\n", 5);
