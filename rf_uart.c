@@ -22,11 +22,15 @@ void clocks_start( void )
 
 static nrf_esb_payload_t        rx_payload;
 int count = 0;
-int latest = 0;
+int last = 0;
+int first = 0;
+int init = 1;
 
 void advertise();
 
 void wait_and_blink();
+
+int rcvd[256];
 
 static nrf_esb_config_t nrf_esb_config = NRF_ESB_DEFAULT_CONFIG;
 static nrf_esb_payload_t tx_payload, rx_payload;
@@ -49,11 +53,23 @@ void nrf_esb_event_handler(nrf_esb_evt_t const * p_event)
         case NRF_ESB_EVENT_RX_RECEIVED:
             if (nrf_esb_read_rx_payload(&rx_payload) == NRF_SUCCESS)
             {
+                nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "rx", 2);
                 nrfx_uart_tx(&m_uart.uart, (uint8_t  *) rx_payload.data, rx_payload.length);
                 int rcvr = rx_payload.data[0] - '0';
-                if (rcvr > latest) {
-                    count ++;
-                    latest = rcvr;
+                if (!first) {
+                    first = rcvr;
+                }
+                if (init) {
+                    if (rcvr <= last && rcvr >= first) {
+                        init = 0;
+                    } else {
+                        count ++;
+                        if (rcvr > last) {
+                            last = rcvr;
+                        }
+                    }
+                } else {
+
                 }
             }
             break;
@@ -129,9 +145,15 @@ int main() {
 
     radio_init(1);
 
+    for (int i = 0; i < 20; i ++) {
+        wait_and_blink();
+    }
+
     while (true)
     {
-        wait_and_blink();
+        for (int i = 0; i < count + 1; i ++) {
+            wait_and_blink();
+        }
 
         advertise();
     }
@@ -149,9 +171,11 @@ void wait_and_blink() {
 
 void advertise() {
     char data[4];
-    data[0] = '0' + count + 1;
+    data[0] = '0' + last + 1;
     data[1] = '\r';
     data[2] = '\n';
     radio_packet_send((uint8_t *) data, 3);
+    nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "tx", 2);
+    nrfx_uart_tx(&m_uart.uart, (uint8_t  *) data, 3);
 }
 
