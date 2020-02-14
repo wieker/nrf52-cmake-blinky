@@ -25,6 +25,8 @@ int count = 0;
 int last = 0;
 int first = 0;
 int init = 1;
+int free = 0;
+int mxm = 0;
 
 void advertise();
 
@@ -60,12 +62,21 @@ void nrf_esb_event_handler(nrf_esb_evt_t const * p_event)
                     first = rcvr;
                 }
                 if (init) {
-                    if (rcvr <= last && rcvr >= first) {
+                    if (rcvr - last > 1) {
+                        if (free == 0) {
+                            free = last + 1;
+                        }
+                    }
+                    if (rcvr < last && rcvr > 1) {
+                        free = 1;
+                    }
+                    if (rcvr <= mxm && rcvr >= first) {
                         init = 0;
                     } else {
                         count ++;
-                        if (rcvr > last) {
-                            last = rcvr;
+                        last = rcvr;
+                        if (mxm < rcvr) {
+                            mxm = rcvr;
                         }
                     }
                 } else {
@@ -144,9 +155,15 @@ int main() {
     clocks_start();
 
     radio_init(1);
+    nrf_esb_config.mode = NRF_ESB_MODE_PRX;
+    nrf_esb_init(&nrf_esb_config);
+    nrf_esb_start_rx();
 
     for (int i = 0; i < 20; i ++) {
         wait_and_blink();
+    }
+    if (free == 0) {
+        free = count + 1;
     }
 
     while (true)
@@ -171,7 +188,7 @@ void wait_and_blink() {
 
 void advertise() {
     char data[4];
-    data[0] = '0' + last + 1;
+    data[0] = '0' + free;
     data[1] = '\r';
     data[2] = '\n';
     radio_packet_send((uint8_t *) data, 3);
