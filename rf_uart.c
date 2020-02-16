@@ -22,11 +22,8 @@ void clocks_start( void )
 
 static nrf_esb_payload_t        rx_payload;
 int count = 0;
-int last = 0;
-int first = 0;
+int pos = 0;
 int init = 1;
-int free = 0;
-int mxm = 0;
 
 void advertise();
 
@@ -57,30 +54,14 @@ void nrf_esb_event_handler(nrf_esb_evt_t const * p_event)
             {
                 nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "rx", 2);
                 nrfx_uart_tx(&m_uart.uart, (uint8_t  *) rx_payload.data, rx_payload.length);
-                int rcvr = rx_payload.data[0] - '0';
-                if (!first) {
-                    first = rcvr;
-                }
+                //int rcvr = rx_payload.data[0] - '0';
+                int new_c = rx_payload.data[2] - '0';
+                count = new_c > count ? new_c : count;
                 if (init) {
-                    if (rcvr - last > 1) {
-                        if (free == 0) {
-                            free = last + 1;
-                        }
-                    }
-                    if (rcvr < last && rcvr > 1) {
-                        free = 1;
-                    }
-                    if (rcvr <= mxm && rcvr >= first) {
-                        init = 0;
-                    } else {
-                        count ++;
-                        last = rcvr;
-                        if (mxm < rcvr) {
-                            mxm = rcvr;
-                        }
-                    }
+                    count ++;
+                    pos = count;
+                    init = 0;
                 } else {
-
                 }
             }
             break;
@@ -162,17 +143,14 @@ int main() {
     for (int i = 0; i < 20; i ++) {
         wait_and_blink();
     }
-    if (free == 0) {
-        free = count + 1;
-    }
 
     while (true)
     {
-        for (int i = 0; i < count + 1; i ++) {
+        advertise();
+
+        for (int i = 0; i < count; i ++) {
             wait_and_blink();
         }
-
-        advertise();
     }
 }
 
@@ -187,12 +165,14 @@ void wait_and_blink() {
 }
 
 void advertise() {
-    char data[4];
-    data[0] = '0' + free;
-    data[1] = '\r';
-    data[2] = '\n';
-    radio_packet_send((uint8_t *) data, 3);
+    char data[5];
+    data[0] = '0' + pos;
+    data[1] = 'c';
+    data[2] = '0' + count;
+    data[3] = '\r';
+    data[4] = '\n';
+    radio_packet_send((uint8_t *) data, sizeof(data));
     nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "tx", 2);
-    nrfx_uart_tx(&m_uart.uart, (uint8_t  *) data, 3);
+    nrfx_uart_tx(&m_uart.uart, (uint8_t  *) data, sizeof(data));
 }
 
