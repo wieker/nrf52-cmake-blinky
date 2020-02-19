@@ -24,6 +24,7 @@ static nrf_esb_payload_t        rx_payload;
 int count = 0;
 int pos = 0;
 int init = 1;
+int wait = 0;
 
 void advertise();
 
@@ -54,14 +55,15 @@ void nrf_esb_event_handler(nrf_esb_evt_t const * p_event)
             {
                 nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "rx", 2);
                 nrfx_uart_tx(&m_uart.uart, (uint8_t  *) rx_payload.data, rx_payload.length);
-                //int rcvr = rx_payload.data[0] - '0';
+                int rcvr = rx_payload.data[0] - '0';
                 int new_c = rx_payload.data[2] - '0';
                 count = new_c > count ? new_c : count;
                 if (init) {
                     count ++;
                     pos = count;
                     init = 0;
-                } else {
+                } else if (wait && (rcvr == pos - 1)) {
+                    wait = 0;
                 }
             }
             break;
@@ -144,11 +146,22 @@ int main() {
         wait_and_blink();
     }
 
+    if (!init) {
+        wait = 1;
+        while (wait) {
+            nrf_delay_ms(10);
+        }
+        wait_and_blink();
+    } else {
+        pos = 1;
+        count = 1;
+    }
+
     while (true)
     {
         advertise();
 
-        for (int i = 0; i < count; i ++) {
+        for (int i = 0; i < count + 1; i ++) {
             wait_and_blink();
         }
     }
@@ -157,11 +170,10 @@ int main() {
 void wait_and_blink() {
     NRF_P0->OUTSET = 1 << 20 | 1 << 22;
     NRF_P0->OUTCLR = 1 << 18 | 1 << 19;
-    nrf_delay_ms(300);
-
+    nrf_delay_ms(500);
     NRF_P0->OUTSET = 1 << 18 | 1 << 19;
     NRF_P0->OUTCLR = 1 << 20 | 1 << 22;
-    nrf_delay_ms(300);
+    nrf_delay_ms(500);
 }
 
 void advertise() {

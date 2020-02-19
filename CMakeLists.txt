@@ -8,6 +8,7 @@ set(NRF52_SDK "/home/wieker/Projects/linux/nrf/sdk")
 # -DNRF52_SDK=...
 
 set(CMAKE_C_STANDARD 99)
+set(SELECTED_TARGET rf_uart)
 set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
 set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 
@@ -369,20 +370,20 @@ add_executable(twi
         )
 
 add_custom_command(
-        OUTPUT ${CMAKE_PROJECT_NAME}.hex
-        COMMAND arm-none-eabi-objcopy -O ihex ${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}.hex
-        DEPENDS ${CMAKE_PROJECT_NAME}
+        OUTPUT ${SELECTED_TARGET}.hex
+        COMMAND arm-none-eabi-objcopy -O ihex ${SELECTED_TARGET} ${SELECTED_TARGET}.hex
+        DEPENDS ${SELECTED_TARGET}
 )
 
 add_custom_target(
         hex
-        DEPENDS ${CMAKE_PROJECT_NAME}.hex
+        DEPENDS ${SELECTED_TARGET}.hex
 )
 
 add_custom_target(
         flash
-        DEPENDS ${CMAKE_PROJECT_NAME}.hex
-        COMMAND nrfjprog -f nrf52 --program ${CMAKE_PROJECT_NAME}.hex --sectorerase --reset
+        DEPENDS ${SELECTED_TARGET}.hex
+        COMMAND nrfjprog -f nrf52 --program ${SELECTED_TARGET}.hex --sectorerase --reset
 )
 
 add_custom_target(
