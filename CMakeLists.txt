@@ -7,6 +7,7 @@ set(NRF52_SDK "/home/wieker/Projects/linux/nrf/sdk")
 # or
 # -DNRF52_SDK=...
 
+set(OPENOCD_BINARY "/home/wieker/Projects/linux/hackrf/openocd-bin/bin/openocd")
 set(CMAKE_C_STANDARD 99)
 set(SELECTED_TARGET rf_uart)
 set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
@@ -381,22 +382,8 @@ add_custom_target(
 )
 
 add_custom_target(
-        flash
+        flash_openocd
         DEPENDS ${SELECTED_TARGET}.hex
-        COMMAND nrfjprog -f nrf52 --program ${SELECTED_TARGET}.hex --sectorerase --reset
-)
+        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /home/wieker/Projects/linux/nrf/sdk/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/wieker/Projects/linux/nrf/nrf52-cmake-blinky/rf_uart.hex verify reset\;\"
+        )
 
-add_custom_target(
-        flash_softdevice
-        COMMAND nrfjprog -f nrf52 --program ${NRF52_SDK}/components/softdevice/s132/hex/s132_nrf52_6.1.0_softdevice.hex --sectorerase
-)
-
-add_custom_target(
-        reset
-        COMMAND nrfjprog -f nrf52 --reset
-)
-
-add_custom_target(
-        erase
-        COMMAND nrfjprog -f nrf52 --eraseall
-)
