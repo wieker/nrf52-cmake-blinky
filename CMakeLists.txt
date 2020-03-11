@@ -9,7 +9,7 @@ set(NRF52_SDK "/home/wieker/Projects/linux/nrf/sdk")
 
 set(OPENOCD_BINARY "/home/wieker/Projects/linux/hackrf/openocd-bin/bin/openocd")
 set(CMAKE_C_STANDARD 99)
-set(SELECTED_TARGET rf_uart)
+set(SELECTED_TARGET blinky)
 set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
 set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 
@@ -211,8 +211,8 @@ set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_COMPILER} <LINK_FLAGS> <OBJECTS> -o <TARG
 
 add_executable(${CMAKE_PROJECT_NAME}
         main.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52.c
+        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
+        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
 )
 
 add_executable(ble
