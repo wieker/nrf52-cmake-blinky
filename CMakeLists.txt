@@ -22,7 +22,6 @@ set(ARCH_FLAGS "\
 
 set(GLOBAL_FLAGS "${ARCH_FLAGS} \
         -DBOARD_PCA10040 \
-        -DDEVELOP_IN_NRF52832 \
         -DNRF52810_XXAA \
         -DS132 \
         -DSOFTDEVICE_PRESENT \
