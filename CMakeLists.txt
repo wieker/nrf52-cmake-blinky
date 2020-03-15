@@ -9,7 +9,7 @@ set(NRF52_SDK "/home/wieker/Projects/linux/nrf/sdk")
 
 set(OPENOCD_BINARY "/home/wieker/Projects/linux/hackrf/openocd-bin/bin/openocd")
 set(CMAKE_C_STANDARD 99)
-set(SELECTED_TARGET blinky)
+set(SELECTED_TARGET uart)
 set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
 set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 
@@ -383,6 +383,6 @@ add_custom_target(
 add_custom_target(
         flash_openocd
         DEPENDS ${SELECTED_TARGET}.hex
-        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /home/wieker/Projects/linux/nrf/sdk/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/wieker/Projects/linux/nrf/nrf52-cmake-blinky/cmake-build-debug/blinky.hex verify reset\;\"
+        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /home/wieker/Projects/linux/nrf/sdk/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/wieker/Projects/linux/nrf/nrf52-cmake-blinky/cmake-build-debug/${SELECTED_TARGET}.hex verify reset\;\"
         )
 
