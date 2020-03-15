@@ -383,6 +383,6 @@ add_custom_target(
 add_custom_target(
         flash_openocd
         DEPENDS ${SELECTED_TARGET}.hex
-        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /home/wieker/Projects/linux/nrf/sdk/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/wieker/Projects/linux/nrf/nrf52-cmake-blinky/rf_uart.hex verify reset\;\"
+        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /home/wieker/Projects/linux/nrf/sdk/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/wieker/Projects/linux/nrf/nrf52-cmake-blinky/cmake-build-debug/blinky.hex verify reset\;\"
         )
 
