@@ -6,8 +6,10 @@
 #include <legacy/nrf_drv_uart.h>
 #include <sdk_config.h>
 #include <nrf_delay.h>
+#include "boards.h"
 
 nrf_drv_uart_t m_uart = NRF_DRV_UART_INSTANCE(0);
+
 
 void uart_init()
 {
@@ -23,17 +25,15 @@ void uart_init()
 }
 
 int main() {
-    NRF_P0->DIRSET = 1 << 24 | 1 << 25 | 1 << 26 | 1 << 27;
     uart_init();
+    bsp_board_init(BSP_INIT_LEDS);
 
     while (1) {
-        NRF_P0->OUTSET = 1 << 24 | 1 << 25;
-        NRF_P0->OUTCLR = 1 << 26 | 1 << 27;
-        nrf_delay_ms(3000);
+        bsp_board_led_on(BSP_BOARD_LED_0);
+        nrf_delay_ms(200);
 
-        NRF_P0->OUTSET = 1 << 26 | 1 << 27;
-        NRF_P0->OUTCLR = 1 << 24 | 1 << 25;
-        nrf_delay_ms(3000);
+        bsp_board_led_off(BSP_BOARD_LED_0);
+        nrf_delay_ms(500);
 
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "ok \r\n", 5);
     }

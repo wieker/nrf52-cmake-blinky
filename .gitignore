@@ -1,2 +1,5 @@
 /cmake-build-*
 /nRF5_SDK_*
+/build/
+/.cproject
+/.project
