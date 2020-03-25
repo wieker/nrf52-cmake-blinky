@@ -1,1 +1,0 @@
-arm-none-eabi-objcopy -O ihex cmake-build-debug/ble ble.hex

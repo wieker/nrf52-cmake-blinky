@@ -9,7 +9,7 @@ set(NRF52_SDK "/opt/nRF5_SDK_16.0.0_98a08e2")
 
 set(OPENOCD_BINARY "openocd")
 set(CMAKE_C_STANDARD 99)
-set(SELECTED_TARGET ble_app_blinky)
+set(SELECTED_TARGET uart)
 set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
 set(CMAKE_ASM_COMPILER "/usr/bin/arm-none-eabi-gcc")
 
@@ -209,11 +209,6 @@ set(CMAKE_EXE_LINKER_FLAGS "${ARCH_FLAGS} \
 
 set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_COMPILER} <LINK_FLAGS> <OBJECTS> -o <TARGET>")
 
-add_executable(${CMAKE_PROJECT_NAME}
-        main.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
-)
 add_executable(ble_app_blinky
 		ble_app_blinky.c
 		
@@ -283,121 +278,6 @@ add_executable(ble_app_blinky
         ${NRF52_SDK}/components/libraries/ringbuf/nrf_ringbuf.c
 )
 
-add_executable(ble
-        ble.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
-
-
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_rtt.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_serial.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_uart.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_default_backends.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_frontend.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_str_formatter.c
-        ${NRF52_SDK}/components/libraries/button/app_button.c
-        ${NRF52_SDK}/components/libraries/util/app_error.c
-        ${NRF52_SDK}/components/libraries/util/app_error_handler_gcc.c
-        ${NRF52_SDK}/components/libraries/util/app_error_weak.c
-        ${NRF52_SDK}/components/libraries/scheduler/app_scheduler.c
-        ${NRF52_SDK}/components/libraries/timer/app_timer.c
-        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
-        ${NRF52_SDK}/components/libraries/crc16/crc16.c
-        ${NRF52_SDK}/components/libraries/hardfault/hardfault_implementation.c
-        ${NRF52_SDK}/components/libraries/util/nrf_assert.c
-        ${NRF52_SDK}/components/libraries/atomic_fifo/nrf_atfifo.c
-        ${NRF52_SDK}/components/libraries/atomic_flags/nrf_atflags.c
-        ${NRF52_SDK}/components/libraries/atomic/nrf_atomic.c
-        ${NRF52_SDK}/components/libraries/balloc/nrf_balloc.c
-        ${NRF52_SDK}/external/fprintf/nrf_fprintf.c
-        ${NRF52_SDK}/external/fprintf/nrf_fprintf_format.c
-        ${NRF52_SDK}/components/libraries/memobj/nrf_memobj.c
-        ${NRF52_SDK}/components/libraries/pwr_mgmt/nrf_pwr_mgmt.c
-        ${NRF52_SDK}/components/libraries/experimental_section_vars/nrf_section_iter.c
-        ${NRF52_SDK}/components/libraries/strerror/nrf_strerror.c
-        ${NRF52_SDK}/components/libraries/sensorsim/sensorsim.c
-        ${NRF52_SDK}/components/boards/boards.c
-        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_clock.c
-        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_clock.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_gpiote.c
-        #${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_power_clock.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uarte.c
-        ${NRF52_SDK}/components/libraries/bsp/bsp.c
-        ${NRF52_SDK}/components/libraries/bsp/bsp_btn_ble.c
-        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT.c
-        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT_Syscalls_GCC.c
-        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT_printf.c
-        ${NRF52_SDK}/components/ble/common/ble_advdata.c
-        ${NRF52_SDK}/components/ble/ble_advertising/ble_advertising.c
-        ${NRF52_SDK}/components/ble/common/ble_conn_params.c
-        ${NRF52_SDK}/components/ble/common/ble_conn_state.c
-        ${NRF52_SDK}/components/ble/common/ble_srv_common.c
-        ${NRF52_SDK}/components/ble/peer_manager/gatt_cache_manager.c
-        ${NRF52_SDK}/components/ble/peer_manager/gatts_cache_manager.c
-        ${NRF52_SDK}/components/ble/nrf_ble_gatt/nrf_ble_gatt.c
-        ${NRF52_SDK}/components/ble/nrf_ble_qwr/nrf_ble_qwr.c
-        ${NRF52_SDK}/components/ble/peer_manager/peer_id.c
-        ${NRF52_SDK}/components/ble/peer_manager/pm_buffer.c
-        #${NRF52_SDK}/components/ble/peer_manager/pm_mutex.c
-        ${NRF52_SDK}/components/ble/peer_manager/security_dispatcher.c
-        ${NRF52_SDK}/components/softdevice/common/nrf_sdh.c
-        ${NRF52_SDK}/components/softdevice/common/nrf_sdh_ble.c
-        ${NRF52_SDK}/components/softdevice/common/nrf_sdh_soc.c
-
-        ${NRF52_SDK}/components/ble/ble_services/ble_lbs/ble_lbs.c
-        ${NRF52_SDK}/components/libraries/ringbuf/nrf_ringbuf.c
-)
-
-
-
-add_executable(direct
-        direct.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
-
-
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_rtt.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_serial.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_backend_uart.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_default_backends.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_frontend.c
-        ${NRF52_SDK}/components/libraries/log/src/nrf_log_str_formatter.c
-
-        ${NRF52_SDK}/components/libraries/util/app_error.c
-        ${NRF52_SDK}/components/libraries/util/app_error_handler_gcc.c
-        ${NRF52_SDK}/components/libraries/util/app_error_weak.c
-
-        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
-
-        ${NRF52_SDK}/components/libraries/util/nrf_assert.c
-        ${NRF52_SDK}/components/libraries/atomic/nrf_atomic.c
-        ${NRF52_SDK}/components/libraries/balloc/nrf_balloc.c
-
-        ${NRF52_SDK}/external/fprintf/nrf_fprintf.c
-        ${NRF52_SDK}/external/fprintf/nrf_fprintf_format.c
-
-        ${NRF52_SDK}/components/libraries/memobj/nrf_memobj.c
-        ${NRF52_SDK}/components/libraries/strerror/nrf_strerror.c
-        ${NRF52_SDK}/components/boards/boards.c
-
-        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_gpiote.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uarte.c
-
-        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT.c
-        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT_Syscalls_GCC.c
-        ${NRF52_SDK}/external/segger_rtt/SEGGER_RTT_printf.c
-
-        ${NRF52_SDK}/components/libraries/ringbuf/nrf_ringbuf.c
-        ${NRF52_SDK}/components/proprietary_rf/esb/nrf_esb.c
-
-)
-
 add_executable(uart
         uart.c
         ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
@@ -409,35 +289,6 @@ add_executable(uart
         ${NRF52_SDK}/components/libraries/util/app_util_platform.c
         ${NRF52_SDK}/components/boards/boards.c
         
-        )
-
-add_executable(rf_uart
-        rf_uart.c
-        i2cfunc.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
-
-        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
-        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
-
-        ${NRF52_SDK}/components/proprietary_rf/esb/nrf_esb.c
-)
-
-add_executable(twi
-        i2c.c
-        ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
-        ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
-
-        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_uart.c
-        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_twi.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
-        ${NRF52_SDK}/components/libraries/util/app_util_platform.c
-
-        ${NRF52_SDK}//components/drivers_ext/hts221/hts221.c
-        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_twi.c
         )
 
 add_custom_command(
@@ -454,6 +305,6 @@ add_custom_target(
 add_custom_target(
         flash_openocd
         DEPENDS ${SELECTED_TARGET}.hex
-        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /opt/nRF5_SDK_16.0.0_98a08e2/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/seregia/Documents/projects/mcu/nrf52-cmake-blinky-ste/build/Default/${SELECTED_TARGET}.hex verify reset\; exit\;\"
+        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program /opt/nRF5_SDK_16.0.0_98a08e2/components/softdevice/s132/hex/s132_nrf52_7.0.1_softdevice.hex\; program /home/seregia/Documents/projects/mcu/nrf52-zigbee-test/build/Default/${SELECTED_TARGET}.hex verify reset\; exit\;\"
         )
 
