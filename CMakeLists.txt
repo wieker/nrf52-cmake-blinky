@@ -3,11 +3,11 @@ project(blinky C ASM)
 
 set(CMAKE_VERBOSE_MAKEFILE 1)
 
-set(NRF52_SDK "/opt/nRF5_SDK_for_Thread_and_Zigbee_v4.0.0_dc7186b")
+set(NRF52_SDK "/home/wieker/Projects/linux/nrf/nRF5_SDK_for_Thread_and_Zigbee_v4.0.0_dc7186b")
 # or
 # -DNRF52_SDK=...
 
-set(OPENOCD_BINARY "openocd")
+set(OPENOCD_BINARY "/home/wieker/Projects/linux/hackrf/openocd-bin/bin/openocd")
 set(CMAKE_C_STANDARD 99)
 set(SELECTED_TARGET light_bulb)
 set(CMAKE_C_COMPILER "/usr/bin/arm-none-eabi-gcc")
@@ -115,6 +115,7 @@ set(CMAKE_EXE_LINKER_FLAGS "${ARCH_FLAGS} \
         -lnosys \
         -lm \
         -lstdc++ \
+        -lzboss \
 ")
 
 set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_C_COMPILER} <LINK_FLAGS> <OBJECTS> -o <TARGET>")
@@ -183,17 +184,13 @@ add_executable(light_bulb
   ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
   ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uarte.c
   ${NRF52_SDK}/components/libraries/bsp/bsp.c
+  ${NRF52_SDK}/external/nRF-IEEE-802.15.4-radio-driver/src/nrf_802154.c
   light_bulb.c
   ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52840.c
   ${NRF52_SDK}/components/zigbee/common/zigbee_helpers.c
   ${NRF52_SDK}/components/zigbee/common/zigbee_logger_eprxzcl.c
   app_utils/ws2812/drv_ws2812.c
 )
-
-ADD_LIBRARY(zboss STATIC IMPORTED)
-SET_TARGET_PROPERTIES(zboss PROPERTIES IMPORTED_LOCATION /opt/nRF5_SDK_for_Thread_and_Zigbee_v4.0.0_dc7186b/external/zboss/lib/gcc/libzboss.a)
-TARGET_LINK_LIBRARIES(light_bulb A zboss C)
-
 
 add_custom_command(
         OUTPUT ${SELECTED_TARGET}.hex
