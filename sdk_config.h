@@ -805,6 +805,14 @@
 // <h> nRF_Libraries 
 
 //==========================================================
+// <q> APP_PWM_ENABLED  - app_pwm - PWM functionality
+
+
+//#ifndef APP_PWM_ENABLED
+//#define APP_PWM_ENABLED 1
+//#endif
+
+//==========================================================
 // <e> NRF_BALLOC_ENABLED - nrf_balloc - Block allocator module
 //==========================================================
 #ifndef NRF_BALLOC_ENABLED
@@ -2124,6 +2132,12 @@
 #endif
 
 // </e>
+
+// <e> NRFX_TIMER_ENABLED - nrfx_timer - TIMER periperal driver
+//==========================================================
+//#ifndef NRFX_TIMER_ENABLED
+//#define NRFX_TIMER_ENABLED 1
+//#endif
 
 // <e> TIMER_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================

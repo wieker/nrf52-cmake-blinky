@@ -57,11 +57,11 @@ extern "C" {
 #define LEDS_NUMBER    5
 
 #define LED_START      18
-#define LED_1          18
-#define LED_2          20
-#define LED_3          22
-#define LED_4          19
-#define LED_5          23
+#define LED_1          18 // Yelow
+#define LED_2          20 // Blue
+#define LED_3          22 // Orange
+#define LED_4          19 // Green
+#define LED_5          23 // Red
 #define LED_STOP       23
 
 #define LEDS_ACTIVE_STATE 1
@@ -70,11 +70,11 @@ extern "C" {
 
 #define LEDS_LIST { LED_1, LED_2, LED_3, LED_4, LED_5 }
 
-#define BSP_LED_0      LED_1
-#define BSP_LED_1      LED_2
-#define BSP_LED_2      LED_3
-#define BSP_LED_3      LED_4
-#define BSP_LED_4      LED_5
+#define BSP_LED_0      LED_1 // Yelow
+#define BSP_LED_1      LED_2 // Blue
+#define BSP_LED_2      LED_3 // Orange
+#define BSP_LED_3      LED_4 // Green
+#define BSP_LED_4      LED_5 // Red
 
 #define BUTTONS_NUMBER 1
 

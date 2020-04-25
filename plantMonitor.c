@@ -56,6 +56,20 @@
 #include "nrf_drv_clock.h"
 #include "nrf_soc.h"
 
+//#include "app_pwm.h"
+
+#include "soilMoistureSensor.h"
+
+//APP_PWM_INSTANCE(PWM1,0);                   // Create the instance "PWM1" using TIMER1.
+
+
+static volatile bool ready_flag;            // A flag indicating PWM status.
+
+void pwm_ready_callback(uint32_t pwm_id)    // PWM callback function
+{
+    ready_flag = true;
+}
+
 #define COMPARE_COUNTERTIME  (3UL)                                        /**< Get Compare event COMPARE_TIME seconds after the counter starts from 0. */
 
 #ifdef BSP_LED_2
@@ -226,6 +240,7 @@ void gpio_init( void )
     nrf_delay_ms(1);
 
     bsp_board_init(BSP_INIT_LEDS);
+    //soilMoistureSensor_setup();
 }
 
 
@@ -258,24 +273,44 @@ static void rtc_handler(nrf_drv_rtc_int_type_t int_type)
     {
         nrf_gpio_pin_toggle(COMPARE_EVENT_OUTPUT);
         esb_completed = false;
-        NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
+        //NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
         clocks_start();
         nrf_delay_ms(50);
         NRF_POWER->TASKS_LOWPWR = 0;
         nrf_delay_ms(50);
         clocks_start();
-        NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
+        //NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
 
         esb_init();
         gpio_init();
 
-            // Recover state if the device was woken from System OFF.
-            recover_state();
+        // Recover state if the device was woken from System OFF.
+        recover_state();
+
+//        nrf_gpio_cfg_output(4);
+//
+//        for (int var = 0; var < 1000; ++var) {
+//
+//        	nrf_gpio_pin_write(4, 1);
+//        	nrf_delay_us(100);
+//        	nrf_gpio_pin_write(4, 0);
+//        	nrf_delay_us(100);
+//		}
+
+        //app_pwm_enable(&PWM1);
+        //while (app_pwm_channel_duty_set(&PWM1, 0, 50) == NRF_ERROR_BUSY);
+        //nrf_delay_ms(50);
+        //app_pwm_disable(&PWM1);
+
+        //nrf_gpio_pin_write(BSP_LED_2, soilMoistureSensor_hasWater());
 
         uint32_t err_code = gpio_check_and_esb_tx();
         APP_ERROR_CHECK(err_code);
 
         while (!esb_completed);
+
+        // Turn off LEDs before sleeping to conserve energy.
+        bsp_board_leds_off();
 
         nrfx_rtc_counter_clear(&rtc);
         nrf_drv_rtc_cc_set(&rtc,0,0xFFFF,true);
@@ -311,7 +346,7 @@ static void rtc_config(void)
     APP_ERROR_CHECK(err_code);
 
     //Enable tick event & interrupt
-    nrf_drv_rtc_tick_enable(&rtc,false);
+    //nrf_drv_rtc_tick_enable(&rtc,false);
 
     //Set compare channel to trigger interrupt after COMPARE_COUNTERTIME seconds
     err_code = nrf_drv_rtc_cc_set(&rtc,0,0xFFFF,true);
@@ -331,15 +366,40 @@ int main(void)
 
     gpio_init();
 
+   // nrf_gpio_cfg_output(5);
+
+
+    /* 2-channel PWM, 200Hz, output on DK LED pins. */
+    //app_pwm_config_t pwm1_cfg = APP_PWM_DEFAULT_CONFIG_1CH(310L, 4);
+
+    /* Switch the polarity of the second channel. */
+    //pwm1_cfg.pin_polarity[1] = APP_PWM_POLARITY_ACTIVE_HIGH;
+
+    /* Initialize and enable PWM. */
+    //err_code =
+    //		app_pwm_init(&PWM1,&pwm1_cfg,pwm_ready_callback);
+    //APP_ERROR_CHECK(err_code);
+    //app_pwm_enable(&PWM1);
+
+    //while (app_pwm_channel_duty_set(&PWM1, 0, 50) == NRF_ERROR_BUSY);
+    //app_pwm_disable(&PWM1);
+    //while (true);
+
     // Recover state if the device was woken from System OFF.
     recover_state();
 
+
+
     lfclk_config();
     rtc_config();
+    esb_completed = true;
+
+   // sd_power_dcdc_mode_set(NRF_POWER_DCDC_ENABLE);
+     //   sd_ble_gap_tx_power_set(0);
     while (true)
     {
     	while (!esb_completed);
-    	NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
+    	//NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
 
     	NRF_POWER->TASKS_LOWPWR = 1;
 
@@ -350,7 +410,7 @@ int main(void)
         __SEV();
         __WFE();
         __WFE();
-        NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
+        //NVIC_EnableIRQ(POWER_CLOCK_IRQn); // do this in main
     }
 
 

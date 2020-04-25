@@ -192,6 +192,7 @@ include_directories(
         ${NRF52_SDK}/components/proprietary_rf/esb
         ${NRF52_SDK}/components/drivers_nrf/nrf_soc_nosd
         ${NRF52_SDK}/modules/nrfx/drivers/src
+        ${NRF52_SDK}/integration/nrfx/legacy/
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${ARCH_FLAGS} \
@@ -246,6 +247,14 @@ add_executable(${CMAKE_PROJECT_NAME}
         ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
         ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
         ${NRF52_SDK}/components/libraries/util/app_util_platform.c
+        
+#        ${NRF52_SDK}/components/libraries/pwm/app_pwm.c
+#        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_ppi.c
+#        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_timer.c
+#        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_ppi.c
+#        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_gpiote.c
+          
+        soilMoistureSensor.c
         )
 
 add_custom_command(
