@@ -808,9 +808,9 @@
 // <q> APP_PWM_ENABLED  - app_pwm - PWM functionality
 
 
-//#ifndef APP_PWM_ENABLED
-//#define APP_PWM_ENABLED 1
-//#endif
+#ifndef APP_PWM_ENABLED
+#define APP_PWM_ENABLED 1
+#endif
 
 //==========================================================
 // <e> NRF_BALLOC_ENABLED - nrf_balloc - Block allocator module

@@ -8,13 +8,7 @@
 #ifndef SOILMOISTURESENSOR_H_
 #define SOILMOISTURESENSOR_H_
 
-#define BOOL uint32_t
-#define TRUE 1
-#define FALSE 0
-#define HIGH 1
-#define LOW 0
-
-void soilMoistureSensor_setup();
-BOOL soilMoistureSensor_hasWater();
+void soilMoistureSensor_init();
+int16_t soilMoistureSensor_getSoilConductivity();
 
 #endif /* SOILMOISTURESENSOR_H_ */

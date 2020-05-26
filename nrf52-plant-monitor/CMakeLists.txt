@@ -192,7 +192,9 @@ include_directories(
         ${NRF52_SDK}/components/proprietary_rf/esb
         ${NRF52_SDK}/components/drivers_nrf/nrf_soc_nosd
         ${NRF52_SDK}/modules/nrfx/drivers/src
-        ${NRF52_SDK}/integration/nrfx/legacy/
+        ${NRF52_SDK}/integration/nrfx/legacy
+
+        ${NRF52_SDK}/components/drivers_nrf/saadc
 )
 
 set(CMAKE_EXE_LINKER_FLAGS "${ARCH_FLAGS} \
@@ -247,14 +249,21 @@ add_executable(${CMAKE_PROJECT_NAME}
         ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_uart.c
         ${NRF52_SDK}/modules/nrfx/drivers/src/prs/nrfx_prs.c
         ${NRF52_SDK}/components/libraries/util/app_util_platform.c
-        
-#        ${NRF52_SDK}/components/libraries/pwm/app_pwm.c
-#        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_ppi.c
-#        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_timer.c
-#        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_ppi.c
-#        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_gpiote.c
-          
+        ${NRF52_SDK}/components/libraries/pwm/app_pwm.c
+        ${NRF52_SDK}/integration/nrfx/legacy/nrf_drv_ppi.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_timer.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_ppi.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_gpiote.c
+
+#        ${NRF52_SDK}/components/drivers_nrf/saadc/nrf_drv_saadc.c
+#        ${NRF52_SDK}/components/drivers_nrf/hal/nrf_saadc.c
+        ${NRF52_SDK}/modules/nrfx/drivers/src/nrfx_saadc.c 
+
         soilMoistureSensor.c
+        esbTx.c
+        rtcModule.c
+        buzzer.c
+        wakeButton.c
         )
 
 add_custom_command(
@@ -271,6 +280,6 @@ add_custom_target(
 add_custom_target(
         flash_openocd
         DEPENDS ${SELECTED_TARGET}.hex
-        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; reset halt\; nrf51 mass_erase\; program ${SELECTED_TARGET}.hex verify reset\; exit\;\"
+        COMMAND ${OPENOCD_BINARY} -f ${CMAKE_SOURCE_DIR}/openocd.cfg -c \"init\; halt\; nrf51 mass_erase\; program ${SELECTED_TARGET}.hex verify reset\; exit\;\"
         )
 

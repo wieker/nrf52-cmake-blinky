@@ -1,5 +1,4 @@
-/cmake-build-*
-/nRF5_SDK_*
-/build/
-/.cproject
-/.project
+**/build/
+**/.cproject
+**/.project
+**/*.zip
