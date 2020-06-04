@@ -23,16 +23,16 @@ void uart_init()
 }
 
 int main() {
-    NRF_P0->DIRSET = 1 << 24 | 1 << 25 | 1 << 26 | 1 << 27;
+    NRF_P0->DIRSET = 1 << 20 | 1 << 18 | 1 << 26 | 1 << 27;
     uart_init();
 
     while (1) {
-        NRF_P0->OUTSET = 1 << 24 | 1 << 25;
+        NRF_P0->OUTSET = 1 << 20 | 1 << 18;
         NRF_P0->OUTCLR = 1 << 26 | 1 << 27;
         nrf_delay_ms(3000);
 
         NRF_P0->OUTSET = 1 << 26 | 1 << 27;
-        NRF_P0->OUTCLR = 1 << 24 | 1 << 25;
+        NRF_P0->OUTCLR = 1 << 20 | 1 << 18;
         nrf_delay_ms(3000);
 
         nrfx_uart_tx(&m_uart.uart, (uint8_t  *) "ok \r\n", 5);

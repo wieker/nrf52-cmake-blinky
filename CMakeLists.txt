@@ -330,7 +330,7 @@ add_executable(direct
 )
 
 add_executable(uart
-        uart.c
+        ../uart.c
         ${NRF52_SDK}/modules/nrfx/mdk/gcc_startup_nrf52810.S
         ${NRF52_SDK}/modules/nrfx/mdk/system_nrf52810.c
 
