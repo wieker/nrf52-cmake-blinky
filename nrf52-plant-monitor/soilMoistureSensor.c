@@ -10,67 +10,22 @@
 #include "boards.h"
 #include "nrf_delay.h"
 #include "soilMoistureSensor.h"
+#include "saadcHelper.h"
 
-#include "nrf_drv_saadc.h"
-
-#define SENS_PIN_OUT 6
-#define SENS_PIN_IN 2
-
-#define COUNT_PROBES 3
+#define COUNT_PROBES 5
 #define DELAY_US_PROBES 100
 
-void saadc_callback(nrf_drv_saadc_evt_t const * p_event) {}
-
-void initSaadc(void)
-{
-	ret_code_t err_code;
-
-	nrf_saadc_channel_config_t channel_config = NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN0);
-	channel_config.reference = NRF_SAADC_REFERENCE_INTERNAL;
-	channel_config.gain = NRF_SAADC_GAIN1_5;
-	channel_config.acq_time = NRF_SAADC_ACQTIME_10US;
-	channel_config.mode = NRF_SAADC_MODE_SINGLE_ENDED;
-	channel_config.pin_p = NRF_SAADC_INPUT_AIN0;
-	channel_config.pin_n = NRF_SAADC_INPUT_DISABLED;
-	channel_config.resistor_p = NRF_SAADC_RESISTOR_PULLDOWN;
-	channel_config.resistor_n = NRF_SAADC_RESISTOR_DISABLED;
-
-	nrf_drv_saadc_config_t saadc_config;
-	saadc_config.low_power_mode = false;
-	saadc_config.resolution = NRF_SAADC_RESOLUTION_12BIT;
-	saadc_config.oversample = NRF_SAADC_OVERSAMPLE_DISABLED;
-	saadc_config.interrupt_priority = APP_IRQ_PRIORITY_LOW;
-
-	err_code = nrf_drv_saadc_init(&saadc_config, saadc_callback);
-	APP_ERROR_CHECK(err_code);
-
-	err_code = nrf_drv_saadc_channel_init(0, &channel_config);
-	APP_ERROR_CHECK(err_code);
-}
-
-void shutdownSaadc(void) {
-	nrf_drv_saadc_abort();
-	nrf_drv_saadc_uninit();
-	while (nrf_drv_saadc_is_busy());
-}
-
-int16_t getSaadcValue(void) {
-	nrf_saadc_value_t adcValue;
-	ret_code_t ret_code = nrf_drv_saadc_sample_convert(0, &adcValue);
-	APP_ERROR_CHECK(ret_code);
-
-	return (int16_t)adcValue;
-}
+#define SAADC_CHANEL 0
+#define SENSOR_MAX_VALUE 11024
 
 void soilMoistureSensor_init() {
 	nrf_gpio_cfg_output(SENS_PIN_OUT);
-	nrf_gpio_cfg_input(SENS_PIN_IN, NRF_GPIO_PIN_NOPULL);
 }
 
 int16_t getDelta(bool bPositive) {
-	int16_t nBefore = getSaadcValue();
+	int16_t nBefore = saadcHelper_getSaadcValue(SAADC_CHANEL);
 	nrf_gpio_pin_write(SENS_PIN_OUT, bPositive);
-	int16_t nAfter = getSaadcValue();
+	int16_t nAfter = saadcHelper_getSaadcValue(SAADC_CHANEL);
 
 	return bPositive
 			? nAfter - nBefore
@@ -79,7 +34,7 @@ int16_t getDelta(bool bPositive) {
 
 int16_t soilMoistureSensor_getSoilConductivity()
 {
-	initSaadc();
+	saadcHelper_initSaadc(SAADC_CHANEL, NRF_SAADC_INPUT_AIN0, NRF_SAADC_RESISTOR_PULLDOWN, NRF_SAADC_REFERENCE_VDD4, NRF_SAADC_GAIN1_4);
 
 	bool bHasLoad = true;
 	int32_t nResult = 0;
@@ -97,8 +52,9 @@ int16_t soilMoistureSensor_getSoilConductivity()
 				: 0;
 	}
 
-	shutdownSaadc();
+	saadcHelper_shutdownSaadc();
+	nResult /= COUNT_PROBES;
 
-	return (int16_t)(nResult /= COUNT_PROBES);
+	return (int16_t)(((double)nResult / SENSOR_MAX_VALUE) * 100);
 }
 

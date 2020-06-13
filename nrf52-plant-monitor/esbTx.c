@@ -15,23 +15,26 @@
 #include "esbTx.h"
 #include "rtcModule.h"
 
-#define BSP_BOARD_LED_TX_ERROR BSP_BOARD_LED_4
-#define BSP_BOARD_LED_TX_SUCCESS BSP_BOARD_LED_1
+#define BSP_BOARD_LED_TX_ERROR BSP_BOARD_LED_0
+#define BSP_BOARD_LED_TX_ACTIVE BSP_BOARD_LED_1
+#define BSP_BOARD_LED_TX_SUCCESS BSP_BOARD_LED_2
 
 static volatile bool esb_completed = false;
+static volatile bool esb_status = false;
+
 static nrf_esb_payload_t tx_payload = NRF_ESB_CREATE_PAYLOAD(0, 0x00, 0x00);
 
 void nrf_esb_event_handler(nrf_esb_evt_t const * p_event) {
 	switch (p_event->evt_id) {
 	case NRF_ESB_EVENT_TX_SUCCESS:
-		bsp_board_led_on(BSP_BOARD_LED_TX_SUCCESS);
+		esb_status = true;
 		break;
 	case NRF_ESB_EVENT_TX_FAILED:
 		(void) nrf_esb_flush_tx();
-		bsp_board_led_on(BSP_BOARD_LED_TX_ERROR);
+		esb_status = false;
 		break;
 	default:
-		bsp_board_led_on(BSP_BOARD_LED_TX_ERROR);
+		esb_status = false;
 		break;
 	}
 
@@ -75,9 +78,12 @@ void esbTx_init() {
 	esb_completed = true;
 }
 
-void esbTx_sendPayload(int16_t val) {
-	tx_payload.data[1] = (uint8_t) val;
-	tx_payload.data[0] = (uint8_t) (val >> 8);
+void esbTx_sendPayload(int8_t deviceId, int8_t value) {
+	bsp_board_led_on(BSP_BOARD_LED_TX_ACTIVE);
+	rtcModule_delayMsLowPower(LEDS_BLINK_PERIOD_MS);
+
+	tx_payload.data[0] = deviceId;
+	tx_payload.data[1] = value;
 	tx_payload.noack = false;
 	esb_completed = false;
 
@@ -86,7 +92,10 @@ void esbTx_sendPayload(int16_t val) {
 
 	while (!esb_completed);
 
-	rtcModule_delayMsLowPower(50);
-	bsp_board_led_off(BSP_BOARD_LED_TX_SUCCESS);
-	bsp_board_led_off(BSP_BOARD_LED_TX_ERROR);
+	bsp_board_led_off(BSP_BOARD_LED_TX_ACTIVE);
+	rtcModule_delayMsLowPower(LEDS_NEXT_BLINK_PERIOD_MS);
+
+	bsp_board_led_on(esb_status ? BSP_BOARD_LED_TX_SUCCESS : BSP_BOARD_LED_TX_ERROR);
+	rtcModule_delayMsLowPower(LEDS_BLINK_PERIOD_MS);
+	bsp_board_led_off(esb_status ? BSP_BOARD_LED_TX_SUCCESS : BSP_BOARD_LED_TX_ERROR);
 }

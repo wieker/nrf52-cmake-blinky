@@ -264,6 +264,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         rtcModule.c
         buzzer.c
         wakeButton.c
+        saadcHelper.c
+        analogueButtonArray.c
+        batteryMeter.c
         )
 
 add_custom_command(

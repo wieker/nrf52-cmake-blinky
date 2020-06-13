@@ -9,7 +9,6 @@
 #define ESBTX_H_
 
 void esbTx_init();
-void esbTx_sendPayload(int16_t val);
-
+void esbTx_sendPayload(int8_t deviceId, int8_t value);
 
 #endif /* ESBTX_H_ */

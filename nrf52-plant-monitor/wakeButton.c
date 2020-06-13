@@ -11,9 +11,10 @@
 
 #include "nrf_drv_gpiote.h"
 #include "rtcModule.h"
+#include "nrf.h"
 
 void in_pin_handler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action) {
-	rtcModule_interruptDelay();
+	NVIC_SystemReset();
 }
 
 void wakeButton_init() {

@@ -268,7 +268,7 @@ UsedLibrary="/home/seregia/eagle/lbr/STLib/STLib.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="231 60 1570 964"
+Loc="452 198 1791 1102"
 State=2
 Number=0
 

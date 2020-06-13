@@ -9,6 +9,7 @@
 
 #include "app_pwm.h"
 #include "rtcModule.h"
+#include "boards.h"
 
 APP_PWM_INSTANCE(PWM1, 0);
 
@@ -19,7 +20,8 @@ void pwm_ready_callback(uint32_t pwm_id) {
 }
 
 void buzzer_init(void) {
-	app_pwm_config_t pwm1_cfg = APP_PWM_DEFAULT_CONFIG_1CH(310L, 4);
+
+	app_pwm_config_t pwm1_cfg = APP_PWM_DEFAULT_CONFIG_1CH(310L, BUZZER_PIN);
 	pwm1_cfg.pin_polarity[1] = APP_PWM_POLARITY_ACTIVE_HIGH;
 	uint32_t err_code = app_pwm_init(&PWM1, &pwm1_cfg, pwm_ready_callback);
 	APP_ERROR_CHECK(err_code);

@@ -53,42 +53,40 @@ extern "C" {
 
 #include "nrf_gpio.h"
 
-// LEDs definitions for PCA10040
+// LEDs definitions for PLANT MONITOR
+#define LEDS_COMMON_ANODE 19
+
+#define LEDS_BLINK_PERIOD_MS 100
+#define LEDS_NEXT_BLINK_PERIOD_MS 500
+
 #define LEDS_NUMBER    5
 
-#define LED_START      18
-#define LED_1          18 // Yelow
-#define LED_2          20 // Blue
-#define LED_3          22 // Orange
-#define LED_4          19 // Green
-#define LED_5          23 // Red
-#define LED_STOP       23
+#define LED_START      13
+#define LED_1          13 // Red
+#define LED_2          15 // Blue
+#define LED_3          17 // Green
+#define LED_STOP       17
 
-#define LEDS_ACTIVE_STATE 1
+#define LEDS_ACTIVE_STATE 0
 
 #define LEDS_INV_MASK  LEDS_MASK
 
-#define LEDS_LIST { LED_1, LED_2, LED_3, LED_4, LED_5 }
+#define LEDS_LIST { LED_1, LED_2, LED_3 }
 
-#define BSP_LED_0      LED_1 // Yelow
-#define BSP_LED_1      LED_2 // Blue
-#define BSP_LED_2      LED_3 // Orange
-#define BSP_LED_3      LED_4 // Green
-#define BSP_LED_4      LED_5 // Red
+#define BSP_LED_0      LED_1
+#define BSP_LED_1      LED_2
+#define BSP_LED_2      LED_3
 
 #define BUTTONS_NUMBER 1
 
-#define BUTTON_START   13
-#define BUTTON_1       13
-//#define BUTTON_2       12
-//#define BUTTON_3       15
-//#define BUTTON_4       16
-#define BUTTON_STOP    13
+#define BUTTON_START   25
+#define BUTTON_1       25
+#define BUTTON_STOP    25
 #define BUTTON_PULL    NRF_GPIO_PIN_PULLUP
 
 #define BUTTONS_ACTIVE_STATE 0
 
-#define BUTTONS_LIST { BUTTON_1}
+#define BUTTONS_LIST { BUTTON_1 }
 
 #define BSP_BUTTON_0   BUTTON_1
 #define BSP_BUTTON_1   BUTTON_2
@@ -100,6 +98,9 @@ extern "C" {
 #define CTS_PIN_NUMBER 7
 #define RTS_PIN_NUMBER 5
 #define HWFC           true
+
+#define BUZZER_PIN      9
+#define SENS_PIN_OUT	22
 
 #define SPIS_MISO_PIN   28  // SPI MISO signal.
 #define SPIS_CSN_PIN    12  // SPI CSN signal.
